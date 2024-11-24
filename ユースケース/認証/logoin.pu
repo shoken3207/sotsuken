@@ -1,0 +1,22 @@
+@startuml
+actor User
+participant "Web App" as App
+participant "Database" as DB
+participant "Email Service" as Email
+participant "Mail Server" as Mail
+
+User -> App: メールアドレス入力
+App -> DB: ユーザー登録 (仮登録)
+DB --> App: 仮登録成功
+App -> Email: 確認メール送信
+Email -> Mail: メール送信
+Mail --> User: メール受信
+
+User -> App: メール内リンクアクセス
+App -> DB: トークン検証
+DB --> App: トークン有効
+User -> App: パスワード入力
+App -> DB: パスワード更新
+DB --> App: 更新成功
+App -> User: 登録完了メッセージ
+@enduml
