@@ -1,0 +1,20 @@
+@startuml
+actor ユーザー as User
+boundary "ホーム画面" as Home
+entity "データベース" as DB
+
+User -> Home: ホーム画面に遷移
+Home -> User: 推しチームのアイコンボタンを優先表示
+
+User -> Home: 推しチームのアイコンボタンをタップ
+Home -> DB: 該当するチームの遠征記録を呼び出し
+DB --> Home: 該当チームの遠征記録データを返す
+Home -> User: 該当チームの遠征記録を表示
+
+alt 推しチームが選択されていない場合
+    Home -> User: 通常の遠征記録一覧を表示
+else 推しチームが選択されている場合
+    Home -> User: 推しチームアイコンボタンを優先表示
+end
+
+@enduml

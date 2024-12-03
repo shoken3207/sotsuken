@@ -1,0 +1,13 @@
+@startuml
+actor ユーザー as User
+boundary "保存済み一覧画面" as SavedList
+boundary "場所情報編集ボトムシート" as EditBottomSheet
+
+User -> SavedList: 変更したい場所のピンを選択
+SavedList -> EditBottomSheet: 場所情報編集ボトムシートを表示
+
+User -> EditBottomSheet: 場所名を入力、色・アイコンを選択
+EditBottomSheet -> EditBottomSheet: 完了ボタン押下
+EditBottomSheet -> SavedList: 編集内容を反映
+
+@enduml
