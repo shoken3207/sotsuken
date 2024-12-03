@@ -2,12 +2,15 @@
 actor ユーザー as User
 boundary "遠征記録一覧画面" as ExpeditionList
 boundary "遠征記録詳細画面" as ExpeditionDetail
+control "遠征記録システム" as System
 entity "データベース" as DB
 
 User -> ExpeditionList: 気になる遠征記録を選択
 ExpeditionList -> ExpeditionDetail: 詳細画面に遷移
-ExpeditionDetail -> DB: 該当する遠征記録のデータを呼び出し
-DB --> ExpeditionDetail: 遠征記録データを返す
+ExpeditionDetail -> System: 該当する遠征記録のデータを呼び出し
+System -> DB: 該当する遠征記録のデータを呼び出し
+DB --> System: 遠征記録データを返す
+System --> ExpeditionDetail: 遠征記録データを返す
 ExpeditionDetail -> User: 遠征記録詳細を表示
 
 @enduml

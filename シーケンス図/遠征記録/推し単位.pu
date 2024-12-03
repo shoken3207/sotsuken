@@ -1,14 +1,17 @@
 @startuml
 actor ユーザー as User
 boundary "ホーム画面" as Home
+control "遠征記録システム" as System
 entity "データベース" as DB
 
 User -> Home: ホーム画面に遷移
 Home -> User: 推しチームのアイコンボタンを優先表示
 
 User -> Home: 推しチームのアイコンボタンをタップ
-Home -> DB: 該当するチームの遠征記録を呼び出し
-DB --> Home: 該当チームの遠征記録データを返す
+Home -> System: 該当するチームの遠征記録を呼び出し
+System -> DB: 該当するチームの遠征記録を呼び出し
+DB --> System: 該当チームの遠征記録データを返す
+System --> Home: 該当チームの遠征記録データを返す
 Home -> User: 該当チームの遠征記録を表示
 
 alt 推しチームが選択されていない場合

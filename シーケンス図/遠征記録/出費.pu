@@ -2,7 +2,6 @@
 actor ユーザー as User
 boundary "遠征記録作成画面" as RecordCreation
 boundary "出費管理画面" as ExpenseManagement
-entity "データベース" as DB
 
 User -> RecordCreation: 「出費を管理するボタン」を押下
 RecordCreation -> ExpenseManagement: 出費管理画面に遷移

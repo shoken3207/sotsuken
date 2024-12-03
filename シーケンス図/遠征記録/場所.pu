@@ -2,7 +2,7 @@
 actor ユーザー as User
 boundary "遠征記録作成画面" as RecordCreation
 boundary "場所記録画面" as LocationRecording
-entity "MapKit" as LocationDB
+control "MapKit" as LocationDB
 
 User -> RecordCreation: マップをタップ
 RecordCreation -> LocationRecording: 場所記録画面に遷移
