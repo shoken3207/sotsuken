@@ -1,0 +1,25 @@
+@startuml
+actor ユーザー as User
+boundary "ホーム画面" as HomeScreen
+boundary "スタジアム検索画面" as SearchScreen
+control "スタジアム関連システム" as Controller
+entity "データベース" as Database
+
+User -> HomeScreen: 検索ボタンを押下
+HomeScreen -> Controller: スタジアム検索画面を表示要求
+Controller -> SearchScreen: スタジアム検索画面に遷移
+
+User -> SearchScreen: 競技を選択
+SearchScreen -> Controller: 選択した競技情報を送信
+Controller -> Database: 対応するスタジアム情報を検索
+alt スタジアム情報が存在する場合
+    Database --> Controller: スタジアム情報を返却
+    Controller -> SearchScreen: スタジアム情報一覧を返却
+    SearchScreen -> User: スタジアム情報一覧を表示
+else スタジアム情報が存在しない場合
+    Database --> Controller: 「データなし」を返却
+    Controller -> SearchScreen: 「該当するスタジアムはありません」と返却
+    SearchScreen -> User: エラーメッセージを表示
+end
+
+@enduml

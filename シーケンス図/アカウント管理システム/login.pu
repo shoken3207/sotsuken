@@ -1,0 +1,61 @@
+@startuml
+actor "ユーザー" as User
+boundary "ホーム画面" as HomeBoundary
+boundary "ログイン画面" as LoginBoundary
+boundary "パスワード変更本人確認画面" as IdentityVerificationBoundary
+boundary "パスワード変更画面" as PassUpdateBoundary
+boundary "パスワード変更完了画面" as PassUpdateCompletedBoundary
+control "アカウント管理システム" as LoginController
+entity "メールクライアント" as EmailClient
+entity "データベース" as UserDB
+
+User -> LoginController: アプリにアクセス
+LoginController -> LoginBoundary: ログイン画面を表示
+
+User -> LoginBoundary: メールアドレス、パスワードを入力しログインボタンを押下
+LoginBoundary -> LoginController: 入力データを送信
+
+alt 入力不備がある場合
+    LoginController -> LoginBoundary: エラー内容を返却
+    LoginBoundary -> User: エラーメッセージを表示
+else 入力内容が正常の場合
+    LoginController -> UserDB: メールアドレスとパスワードを照合
+    alt 該当ユーザーがいる場合
+        UserDB --> LoginController: 照合成功
+        LoginController -> LoginController: JWTトークンを生成
+        LoginController -> LoginBoundary: CookieにJWTトークンを保存
+        LoginBoundary -> User: ホーム画面へ遷移
+    else 該当ユーザーがいない場合
+        UserDB --> LoginController: 照合失敗
+        LoginController -> LoginBoundary: エラーメッセージを返却
+        LoginBoundary -> User: エラーメッセージを表示
+    end
+end
+
+== パスワードを忘れた場合 ==
+User -> LoginBoundary: 「パスワードを忘れた方」リンクを押下
+LoginBoundary -> LoginController: パスワード変更本人確認画面表示要求
+LoginController -> IdentityVerificationBoundary: パスワード変更本人確認画面表示
+User -> IdentityVerificationBoundary: メールアドレスを入力し本人確認ボタンを押下
+IdentityVerificationBoundary -> LoginController: メールアドレスを送信
+LoginController -> UserDB: メールアドレスを確認
+alt 登録済みメールアドレスの場合
+    UserDB --> LoginController: 存在確認成功
+    LoginController -> User: パスワード変更画面リンクを送信
+    User -> EmailClient: メールを確認しリンクを押下
+    EmailClient -> LoginController: パスワード変更画面表示要求
+    LoginController -> PassUpdateBoundary: パスワード変更画面を表示
+    User -> PassUpdateBoundary: 新しいパスワードを入力し変更ボタンを押下
+    PassUpdateBoundary -> LoginController: 入力データを送信
+    LoginController -> UserDB: パスワードを更新
+    UserDB --> LoginController: 更新成功
+    LoginController -> PassUpdateCompletedBoundary: パスワード変更完了画面を表示
+    User -> PassUpdateCompletedBoundary: 「ログインする」リンクを押下
+    LoginController -> LoginBoundary: ログイン画面を表示
+else 登録されていないメールアドレスの場合
+    UserDB --> LoginController: 存在確認失敗
+    LoginController -> IdentityVerificationBoundary: エラーメッセージを返却
+    IdentityVerificationBoundary -> User: エラーメッセージを表示
+end
+
+@enduml
