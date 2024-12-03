@@ -1,0 +1,24 @@
+@startuml
+actor ユーザー as User
+boundary "遠征記録作成画面" as RecordCreation
+boundary "出費管理画面" as ExpenseManagement
+
+User -> RecordCreation: 「出費を管理するボタン」を押下
+RecordCreation -> ExpenseManagement: 出費管理画面に遷移
+
+User -> ExpenseManagement: 出費項目、日付、金額を入力
+User -> ExpenseManagement: 追加ボタンを押下
+ExpenseManagement -> ExpenseManagement: 入力内容を出費一覧に追加
+ExpenseManagement -> ExpenseManagement: 日付ごとにグループ化し表示
+ExpenseManagement -> ExpenseManagement: 合計金額を計算・表示
+
+alt 出費を削除
+    User -> ExpenseManagement: 出費をスライドして削除
+    ExpenseManagement -> ExpenseManagement: 該当する出費を削除
+    ExpenseManagement -> ExpenseManagement: 合計金額を再計算
+end
+
+User -> ExpenseManagement: 戻るボタンを押下
+ExpenseManagement -> RecordCreation: 遠征記録作成画面に戻る
+
+@enduml

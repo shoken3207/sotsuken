@@ -1,0 +1,25 @@
+@startuml
+actor ユーザー as User
+boundary "遠征記録一覧画面" as RecordList
+boundary "遠征記録編集画面" as RecordEdit
+control "遠征記録システム" as System
+entity "データベース" as DB
+
+User -> RecordList: 編集ボタンを押下
+RecordList -> RecordEdit: 遠征記録編集画面に遷移
+
+User -> RecordEdit: 編集したい内容を入力
+alt 入力内容に問題がある
+    RecordEdit -> User: バリデーションエラーを表示（赤色）
+    RecordEdit -> User: トーストUIで問題の詳細を通知
+    User -> RecordEdit: 修正後再入力
+else 入力内容が正しい
+    User -> RecordEdit: 更新ボタンを押下
+    RecordEdit -> System: 該当遠征記録を更新
+    System -> DB: 該当遠征記録を更新
+    DB --> System: 更新成功通知
+    System --> RecordEdit: 更新成功通知
+    RecordEdit -> User: 編集完了を通知
+end
+
+@enduml

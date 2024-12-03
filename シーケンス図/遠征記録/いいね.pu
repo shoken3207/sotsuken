@@ -1,0 +1,14 @@
+@startuml
+actor ユーザー as User
+boundary "遠征記録画面" as RecordScreen
+control "遠征記録システム" as System
+entity "データベース" as DB
+
+User -> RecordScreen: いいねアイコンをタップ
+RecordScreen -> System: いいねの数を加算
+System -> DB: いいねの数を加算
+DB --> System: いいね数の更新通知
+System --> RecordScreen: いいね数の更新通知
+RecordScreen -> User: いいねアイコンの色を変更
+
+@enduml
