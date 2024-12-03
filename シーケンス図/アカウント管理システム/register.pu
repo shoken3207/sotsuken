@@ -1,0 +1,32 @@
+@startuml
+actor ユーザー as User
+boundary ログイン画面 as LoginScreen
+boundary メールアドレス本人確認画面 as EmailVerificationScreen
+boundary ユーザー登録画面 as RegistrationScreen
+control アカウント管理システム as AccountSystem
+entity データベース as Database
+entity メールクライアント as EmailClient
+
+User -> LoginScreen : 「こちらから登録」を押下
+LoginScreen -> AccountSystem : 登録遷移要求
+AccountSystem -> EmailVerificationScreen : メールアドレス本人確認画面を表示
+
+User -> EmailVerificationScreen : メールアドレスを入力し「登録」を押下
+EmailVerificationScreen -> AccountSystem : メールアドレス送信要求
+AccountSystem -> EmailClient : 本登録用リンクを送信
+
+User -> EmailClient : メール内リンクを押下
+EmailClient -> AccountSystem : 本登録用リンク要求
+AccountSystem -> RegistrationScreen : ユーザー登録画面を表示
+
+User -> RegistrationScreen : 必要項目を入力し「登録」を押下
+RegistrationScreen -> AccountSystem : 入力データ送信
+AccountSystem -> AccountSystem : 入力内容検査
+alt 入力エラーがある場合
+    AccountSystem -> RegistrationScreen : エラーを赤色で表示
+else 入力が正しい場合
+    AccountSystem -> Database : ユーザー情報を登録
+    Database --> AccountSystem : 登録成功
+    AccountSystem -> RegistrationScreen : 登録完了画面を表示
+end
+@enduml

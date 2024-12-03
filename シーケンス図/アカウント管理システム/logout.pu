@@ -1,0 +1,17 @@
+@startuml
+actor "ユーザー" as User
+boundary "マイページ画面" as MyPageBoundary
+control "アカウント管理システム" as LogoutController
+
+User -> MyPageBoundary: ハンバーガーメニューを押下
+MyPageBoundary -> User: ハンバーガーメニューを展開
+
+User -> MyPageBoundary: 「ログアウト」ボタンを押下
+MyPageBoundary -> LogoutController: ログアウトリクエスト送信
+
+LogoutController -> LogoutController: JWTトークンを無効化 (Cookieから削除)
+
+LogoutController -> MyPageBoundary: ログアウト完了応答
+MyPageBoundary -> User: ログイン画面に遷移
+
+@enduml
