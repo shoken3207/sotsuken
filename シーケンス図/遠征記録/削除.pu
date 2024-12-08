@@ -1,0 +1,18 @@
+@startuml
+actor ユーザー as User
+boundary "遠征記録一覧画面" as RecordList
+boundary "削除確認ダイアログ" as ConfirmDialog
+control "遠征記録システム" as System
+entity "データベース" as DB
+
+User -> RecordList: 削除ボタンを押下
+RecordList -> ConfirmDialog: 削除確認ダイアログを表示
+
+User -> ConfirmDialog: 削除ボタンを押下
+ConfirmDialog -> System: 該当遠征記録を削除
+System -> DB: 該当遠征記録を削除
+DB --> System: 削除成功通知
+System --> ConfirmDialog: 削除成功通知
+ConfirmDialog -> RecordList: 削除完了を通知
+
+@enduml

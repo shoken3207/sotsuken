@@ -1,0 +1,49 @@
+@startuml
+actor ユーザー as User
+boundary "ボトムナビゲーション" as BottomNav
+boundary "競技種目選択画面" as SportSelection
+boundary "遠征記録作成画面" as RecordCreation
+boundary "場所記録画面" as LocationRecord
+boundary "出費管理画面" as ExpenseManagement
+control "遠征記録システム" as System
+entity "データベース" as DB
+
+User -> BottomNav: 「投稿タブ」を押下
+BottomNav -> SportSelection: ボトムシートに競技種目を表示
+User -> SportSelection: 競技種目を選択
+SportSelection -> RecordCreation: 遠征記録作成画面に遷移
+
+User -> RecordCreation: 公開範囲を選択（public/private）
+User -> RecordCreation: タイトル、期間、写真を入力・選択
+User -> RecordCreation: 会場/試合記録をテキストボックスに入力
+User -> RecordCreation: 「+ボタン」でテキストボックスを追加
+
+User -> RecordCreation: マップをタップ
+RecordCreation -> LocationRecord: 場所記録画面を表示
+User -> LocationRecord: ピンを立てて位置情報を保存
+alt 戻るボタンを押下
+    User -> RecordCreation: 遠征記録作成画面に戻る
+end
+
+User -> RecordCreation: 「出費を管理するボタン」を押下
+RecordCreation -> ExpenseManagement: 出費管理画面に遷移
+User -> ExpenseManagement: 出費項目、日付、金額を入力
+User -> ExpenseManagement: 「追加ボタン」を押下
+alt 戻るボタンを押下
+    User -> RecordCreation: 遠征記録作成画面に戻る
+end
+
+User -> RecordCreation: 「投稿ボタン」を押下
+RecordCreation -> System: 遠征記録データを保存
+System -> DB: 遠征記録データを保存
+alt 入力内容に問題がある
+    RecordCreation -> User: バリデーションエラー表示
+    RecordCreation -> User: トーストUIで詳細を通知
+    User -> RecordCreation: 修正後再投稿
+else 正常
+    DB --> System: 保存成功通知
+    System --> RecordCreation: 保存成功通知
+    RecordCreation -> User: 遠征記録作成完了を通知
+end
+
+@enduml

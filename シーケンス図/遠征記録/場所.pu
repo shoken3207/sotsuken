@@ -1,0 +1,29 @@
+@startuml
+actor ユーザー as User
+boundary "遠征記録作成画面" as RecordCreation
+boundary "場所記録画面" as LocationRecording
+control "MapKit" as LocationDB
+
+User -> RecordCreation: マップをタップ
+RecordCreation -> LocationRecording: 場所記録画面に遷移
+
+alt トグルボタン「検索結果」を押下
+    User -> LocationRecording: テキストボックスに検索キーワードを入力
+    LocationRecording -> LocationDB: 検索処理
+    alt 検索結果が存在する場合
+        LocationDB --> LocationRecording: 検索結果を一覧で表示
+        User -> LocationRecording: 保存したい場所をスワイプ
+        LocationRecording -> LocationRecording: ピンをマップ上に立てる
+    end
+else トグルボタン「保存済み」を押下
+    alt 保存済みの場所が存在する場合
+        LocationRecording -> LocationRecording: 保存済み場所を表示
+        User -> LocationRecording: 削除したい場所をスワイプ
+        LocationRecording -> LocationRecording: ピンを除去
+    end
+end
+
+User -> LocationRecording: 「戻るボタン」を押下
+LocationRecording -> RecordCreation: 遠征記録作成画面に遷移
+
+@enduml
